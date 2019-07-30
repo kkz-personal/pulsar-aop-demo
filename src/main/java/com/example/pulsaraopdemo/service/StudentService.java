@@ -1,6 +1,6 @@
-package com.example.service;
+package com.example.pulsaraopdemo.service;
 
-import com.example.mybatis.po.Student;
+import com.example.pulsaraopdemo.mybatis.po.Student;
 
 import java.util.List;
 

@@ -1,13 +1,15 @@
-package com.example.imp;
+package com.example.pulsaraopdemo.imp;
 
-import com.example.mybatis.dao.TeacherMapper;
-import com.example.mybatis.po.Teacher;
-import com.example.mybatis.po.TeacherExample;
-import com.example.service.TeacherService;
+import com.example.pulsaraopdemo.mybatis.dao.TeacherMapper;
+import com.example.pulsaraopdemo.mybatis.po.Teacher;
+import com.example.pulsaraopdemo.mybatis.po.TeacherExample;
+import com.example.pulsaraopdemo.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class TeacherServiceImp implements TeacherService {
 
     @Autowired

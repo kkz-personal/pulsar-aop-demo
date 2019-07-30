@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.mybatis.dao.TeacherMapper">
-  <resultMap id="BaseResultMap" type="com.example.mybatis.po.Teacher">
+<mapper namespace="com.example.pulsaraopdemo.mybatis.dao.TeacherMapper">
+  <resultMap id="BaseResultMap" type="com.example.pulsaraopdemo.mybatis.po.Teacher">
     <result column="id" jdbcType="INTEGER" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="age" jdbcType="INTEGER" property="age" />
@@ -70,7 +70,7 @@
   <sql id="Base_Column_List">
     id, `name`, age, phone, sex, teach_time
   </sql>
-  <select id="selectByExample" parameterType="com.example.mybatis.po.TeacherExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.example.pulsaraopdemo.mybatis.po.TeacherExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -84,13 +84,13 @@
       order by ${orderByClause}
     </if>
   </select>
-  <delete id="deleteByExample" parameterType="com.example.mybatis.po.TeacherExample">
+  <delete id="deleteByExample" parameterType="com.example.pulsaraopdemo.mybatis.po.TeacherExample">
     delete from teacher
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.example.mybatis.po.Teacher">
+  <insert id="insert" parameterType="com.example.pulsaraopdemo.mybatis.po.Teacher">
     insert into teacher (id, `name`, age, 
       phone, sex, teach_time
       )
@@ -98,7 +98,7 @@
       #{phone,jdbcType=INTEGER}, #{sex,jdbcType=VARCHAR}, #{teachTime,jdbcType=INTEGER}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.example.mybatis.po.Teacher">
+  <insert id="insertSelective" parameterType="com.example.pulsaraopdemo.mybatis.po.Teacher">
     insert into teacher
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -141,7 +141,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.example.mybatis.po.TeacherExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="com.example.pulsaraopdemo.mybatis.po.TeacherExample" resultType="java.lang.Long">
     select count(*) from teacher
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -186,7 +186,7 @@
     </if>
   </update>
 
-  <select id="getAll" parameterType="com.example.mybatis.po.TeacherExample" resultMap="BaseResultMap">
+  <select id="getAll" parameterType="com.example.pulsaraopdemo.mybatis.po.TeacherExample" resultMap="BaseResultMap">
       SELECT * FROM tearcher
   </select>
 </mapper>

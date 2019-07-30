@@ -43,7 +43,7 @@
         </javaTypeResolver>
 
         <!-- 生成实体类地址 -->
-        <javaModelGenerator targetPackage="com.example.mybatis.po" targetProject="${project}" >
+        <javaModelGenerator targetPackage="com.example.pulsaraopdemo.mybatis.po" targetProject="${project}" >
             <property name="enableSubPackages" value="false"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
@@ -54,13 +54,13 @@
         </sqlMapGenerator>
 
         <!-- 生成mapxml对应client，也就是接口dao -->
-        <javaClientGenerator targetPackage="com.example.mybatis.dao" targetProject="${project}" type="XMLMAPPER" >
+        <javaClientGenerator targetPackage="com.example.pulsaraopdemo.mybatis.dao" targetProject="${project}" type="XMLMAPPER" >
             <property name="enableSubPackages" value="false" />
         </javaClientGenerator>
 
-        <table tableName="teacher" schema=""></table>
-        <table tableName="student" schema=""></table>
-        <table tableName="class"   schema=""></table>
+        <!--<table tableName="teacher" schema=""></table>-->
+        <!--<table tableName="student" schema=""></table>-->
+        <table tableName="stu_class"   schema=""></table>
 
         <!--&lt;!&ndash; table可以有多个,每个数据库中的表都可以写一个table，tableName表示要匹配的数据库表,也可以在tableName属性中通过使用%通配符来匹配所有数据库表,只有匹配的表才会自动生成文件 &ndash;&gt;-->
         <!--<table tableName="books" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">-->

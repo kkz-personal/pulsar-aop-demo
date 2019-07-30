@@ -3,6 +3,8 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: http:\\localhost:3306\test
+    url: http:\\localhost:3306\test?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true
+
+
     username: root
     password: kmz123456
