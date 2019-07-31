@@ -29,7 +29,7 @@ public class MessageConsumer {
     }
 
     public void receiveMessage() throws ExecutionException, InterruptedException, PulsarClientException {
-        /***
+        /**
          * 用来异步获取，保持回话
          */
         do {
@@ -42,7 +42,7 @@ public class MessageConsumer {
     }
 
     public String getMessage() throws ExecutionException, InterruptedException, PulsarClientException {
-        /***
+        /**
          * 获取一次，就关闭会话
          */
         System.out.printf("Start pulsar");
