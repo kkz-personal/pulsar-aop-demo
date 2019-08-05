@@ -1,9 +1,8 @@
 package com.example.pulsaraopdemo.client;
 
-import org.apache.pulsar.client.api.Consumer;
-import org.apache.pulsar.client.api.Message;
-import org.apache.pulsar.client.api.PulsarClientException;
-import org.apache.pulsar.client.api.SubscriptionType;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.pulsar.client.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -13,50 +12,76 @@ import java.util.concurrent.TimeUnit;
  * @author kmz
  * 单主题订阅，打印收到的订阅内容，不close链接
  */
+@Slf4j
 public class MessageConsumer {
-    private Client client;
+
+    /**
+     * 数据消费者
+     */
     private Consumer consumer;
 
-    public MessageConsumer(String topic, String subscription) throws PulsarClientException {
-        client = new Client();
-        consumer = createConsumer(topic, subscription);
+    @Autowired
+    private PulsarClient pulsarClient;
+
+
+    public MessageConsumer(String topic, String subscription) {
+
+        try {
+            this.consumer = this.pulsarClient.newConsumer().topic(topic).subscriptionName(subscription)
+                    .ackTimeout(10, TimeUnit.SECONDS).subscriptionType(SubscriptionType.Exclusive).subscribe();
+        } catch (PulsarClientException e) {
+            log.info("创建 consumer 失败.", e);
+        }
     }
 
-    private Consumer createConsumer(String topic, String subscription) throws PulsarClientException {
 
-        return client.getPulsarClient().newConsumer().topic(topic).subscriptionName(subscription)
-                .ackTimeout(10, TimeUnit.SECONDS).subscriptionType(SubscriptionType.Exclusive).subscribe();
-    }
-
-    public void receiveMessage() throws ExecutionException, InterruptedException, PulsarClientException {
+    public void receiveMessage() {
         /**
          * 用来异步获取，保持回话
          */
         do {
             CompletableFuture<Message> msg = consumer.receiveAsync();
-
-            System.out.printf("Message received: %s", new String(msg.get().getData()));
-
-            consumer.acknowledge(msg.get());
+            try {
+                System.out.printf("Message received: %s", new String(msg.get().getData()));
+                consumer.acknowledge(msg.get());
+            } catch (PulsarClientException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
         } while (true);
     }
 
-    public String getMessage() throws ExecutionException, InterruptedException, PulsarClientException {
+    public String getMessage() {
         /**
          * 获取一次，就关闭会话
          */
-        System.out.printf("Start pulsar");
+        log.info("-----------------------Start get Message------------------------------------");
         CompletableFuture<Message> msg = consumer.receiveAsync();
 
-        String result = "topic is: " + msg.get().getTopicName() + ",data is: " + new String(msg.get().getData());
+        String result = null;
 
-        consumer.acknowledge(msg.get());
-        consumer.close();
-        client.Close();
+        try {
+            result = "topic is: " + msg.get().getTopicName() + ",data is: " + new String(msg.get().getData());
+            consumer.acknowledge(msg.get());
+
+            consumer.close();
+            pulsarClient.close();
+        } catch (PulsarClientException e) {
+            log.info("客户端异常",e);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
         return result;
     }
 
-    public static void main(String[] args) throws PulsarClientException, ExecutionException, InterruptedException {
+    public static void main(String[] args) {
+
         MessageConsumer consumer = new MessageConsumer("topic1", "my-sub");
         consumer.receiveMessage();
 

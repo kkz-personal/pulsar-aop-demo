@@ -1,30 +1,37 @@
 package com.example.pulsaraopdemo.client;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.pulsar.client.api.Producer;
+import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.PulsarClientException;
+import org.apache.pulsar.client.api.Schema;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 测试使用的消息生产者
  * @author kmz
  */
+@Slf4j
 public class MessageProducer {
 
-    private Client client;
+    @Autowired
+    private PulsarClient pulsarClient;
+
     private Producer<byte[]> producer;
 
-    public MessageProducer(String topic) throws PulsarClientException {
-        client = new Client();
-        producer = createProducer(topic);
-    }
-
-    private Producer<byte[]> createProducer(String topic) throws PulsarClientException {
-        return client.getPulsarClient().newProducer()
-                .topic(topic)
-                .batchingMaxPublishDelay(10, TimeUnit.MILLISECONDS)
-                .sendTimeout(10, TimeUnit.SECONDS)
-                .blockIfQueueFull(true)
-                .create();
+    public MessageProducer(String topic) {
+        try {
+            this.producer = this.pulsarClient.newProducer(Schema.BYTES)
+                    .topic(topic)
+                    .batchingMaxPublishDelay(10, TimeUnit.MILLISECONDS)
+                    .sendTimeout(10, TimeUnit.SECONDS)
+                    .blockIfQueueFull(true)
+                    .create();
+        } catch (PulsarClientException e) {
+            log.info("producer create fail", e);
+        }
     }
 
     public void sendMessage(String message) {
@@ -39,10 +46,9 @@ public class MessageProducer {
          * 发送一次就关闭
          */
         try {
-            producer.send(message.getBytes());
-            System.out.printf("Message with content %s successfully sent", message);
-            producer.close();
-            client.Close();
+            sendMessage(message);
+            close(producer);
+            pulsarClient.close();
         } catch (PulsarClientException e) {
             e.printStackTrace();
         }
@@ -53,11 +59,10 @@ public class MessageProducer {
                 .thenRun(() -> System.out.println("Producer closed"));
     }
 
-    public static void main(String[] args) throws PulsarClientException {
+    public static void main(String[] args) {
+
         MessageProducer producer = new MessageProducer("topic1");
 
         producer.sendOnce("Hello World ,hahahahahahahahahaa");
-
-
     }
 }

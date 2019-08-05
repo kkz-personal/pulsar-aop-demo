@@ -8,3 +8,7 @@ spring:
 
     username: root
     password: kmz123456
+
+test:
+  pulsar:
+    serviceUrl: pulsar://127.0.0.1:26650/

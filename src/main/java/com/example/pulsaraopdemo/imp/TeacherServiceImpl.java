@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class TeacherServiceImp implements TeacherService {
+public class TeacherServiceImpl implements TeacherService {
 
     @Autowired
     TeacherMapper teacherMapper;

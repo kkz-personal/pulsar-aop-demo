@@ -13,7 +13,7 @@ import java.util.List;
  * @author kmz
  */
 @Service
-public class StuClassServiceImp implements StuClassService {
+public class StuClassServiceImpl implements StuClassService {
 
     @Autowired
     StuClassMapper classMapper;
