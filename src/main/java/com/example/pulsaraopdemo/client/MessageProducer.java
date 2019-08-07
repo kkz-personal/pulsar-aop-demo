@@ -6,6 +6,7 @@ import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.PulsarClientException;
 import org.apache.pulsar.client.api.Schema;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
 
@@ -16,13 +17,16 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class MessageProducer {
 
-    @Autowired
     private PulsarClient pulsarClient;
 
     private Producer<byte[]> producer;
 
     public MessageProducer(String topic) {
         try {
+            System.out.println("--------------开始创建client-------------------------");
+            this.pulsarClient = PulsarClient.builder()
+                    .serviceUrl("pulsar://0.0.0.0:26650/")
+                    .build();
             this.producer = this.pulsarClient.newProducer(Schema.BYTES)
                     .topic(topic)
                     .batchingMaxPublishDelay(10, TimeUnit.MILLISECONDS)
@@ -30,7 +34,7 @@ public class MessageProducer {
                     .blockIfQueueFull(true)
                     .create();
         } catch (PulsarClientException e) {
-            log.info("producer create fail", e);
+            System.out.println("producer create fail");
         }
     }
 
@@ -46,8 +50,13 @@ public class MessageProducer {
          * 发送一次就关闭
          */
         try {
-            sendMessage(message);
-            close(producer);
+            System.out.println("--------------开始发送信息----------------");
+
+            producer.send(message.getBytes());
+            System.out.printf("Message with content %s successfully sent", message);
+            producer.close();
+//            sendMessage(message);
+//            close(producer);
             pulsarClient.close();
         } catch (PulsarClientException e) {
             e.printStackTrace();
@@ -64,5 +73,6 @@ public class MessageProducer {
         MessageProducer producer = new MessageProducer("topic1");
 
         producer.sendOnce("Hello World ,hahahahahahahahahaa");
+
     }
 }

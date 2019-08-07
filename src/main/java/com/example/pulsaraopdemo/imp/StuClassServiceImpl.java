@@ -34,4 +34,9 @@ public class StuClassServiceImpl implements StuClassService {
     public List<StuClass> getAll() {
       return classMapper.getAll();
     }
+
+    @Override
+    public StuClass selectOneByClassCno(int cno) {
+        return classMapper.selectOneByClassCno(cno);
+    }
 }

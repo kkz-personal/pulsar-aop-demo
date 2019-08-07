@@ -3,8 +3,10 @@ package com.example.pulsaraopdemo.imp;
 import com.example.pulsaraopdemo.common.enums.PushChannelEnum;
 import com.example.pulsaraopdemo.service.PushService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.PulsarClient;
+import org.apache.pulsar.client.api.PulsarClientException;
 import org.apache.pulsar.client.api.Schema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,7 @@ import java.util.*;
 /**
  * @author kmz
  */
+@Slf4j
 @Component
 public class PushServiceImpl implements PushService {
 
@@ -60,6 +63,16 @@ public class PushServiceImpl implements PushService {
     @Override
     public void commit() {
 
+        try {
+            for (PushMsg pushMsg : pipeline.get()) {
+                topicProducerMap.get(pushMsg.key).newMessage().key(pushMsg.key).value(pushMsg.value).send();
+            }
+        } catch (PulsarClientException e) {
+            log.info("publish error", e);
+        }finally {
+            this.pipeline.remove();
+            this.proessing.set(false);
+        }
     }
 
     /**

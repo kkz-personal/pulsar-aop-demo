@@ -26,4 +26,6 @@ public interface StuClassMapper {
     int updateByExample(@Param("record") StuClass record, @Param("example") StuClassExample example);
 
     List<StuClass> getAll();
+
+    StuClass selectOneByClassCno(@Param("cno") int cno);
 }

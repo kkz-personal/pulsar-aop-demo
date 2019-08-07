@@ -61,6 +61,12 @@ public class InsertTest {
 
     @Test
     public void gerAll(){
-        System.out.println(studentService.getAll());
+        System.out.println(stuClassService.getAll());
+    }
+
+    @Test
+    public void selectOne(){
+        StuClass stuClass = stuClassService.selectOneByClassCno(1234567894);
+        System.out.println(stuClass);
     }
 }

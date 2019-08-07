@@ -3,6 +3,7 @@ package com.example.pulsaraopdemo.client;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pulsar.client.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -20,17 +21,20 @@ public class MessageConsumer {
      */
     private Consumer consumer;
 
-    @Autowired
     private PulsarClient pulsarClient;
 
 
     public MessageConsumer(String topic, String subscription) {
 
         try {
+            System.out.println("开始创建 pulsar client");
+            this.pulsarClient = PulsarClient.builder()
+                    .serviceUrl("pulsar://127.0.0.1:26650/")
+                    .build();
             this.consumer = this.pulsarClient.newConsumer().topic(topic).subscriptionName(subscription)
                     .ackTimeout(10, TimeUnit.SECONDS).subscriptionType(SubscriptionType.Exclusive).subscribe();
         } catch (PulsarClientException e) {
-            log.info("创建 consumer 失败.", e);
+            System.out.println("创建失败");
         }
     }
 
@@ -40,6 +44,7 @@ public class MessageConsumer {
          * 用来异步获取，保持回话
          */
         do {
+            System.out.println("================开始获取信息==========================");
             CompletableFuture<Message> msg = consumer.receiveAsync();
             try {
                 System.out.printf("Message received: %s", new String(msg.get().getData()));

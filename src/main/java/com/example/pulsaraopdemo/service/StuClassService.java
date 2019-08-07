@@ -15,4 +15,7 @@ public interface StuClassService {
     void delete(int id);
 
     List<StuClass> getAll();
+
+    StuClass selectOneByClassCno(int cno);
+
 }

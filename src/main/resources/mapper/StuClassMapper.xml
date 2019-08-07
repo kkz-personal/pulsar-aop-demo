@@ -175,4 +175,7 @@
   <select id="getAll" resultMap="BaseResultMap">
     SELECT  * FROM  stu_class
   </select>
+  <select id="selectOneByClassCno" resultMap="BaseResultMap" parameterType="int">
+    select * from stu_class where stu_cno = #{cno}  limit 1
+  </select>
 </mapper>
