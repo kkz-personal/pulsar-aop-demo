@@ -27,9 +27,10 @@ public class PushServiceImpl implements PushService {
     private Map<String, Producer<String>> topicProducerMap;
 
     /**
-     * 推送消息队列
+     * 推送消息map
+     * map的key 需要依据具体情况构建，保证唯一性
      */
-    private ThreadLocal<List<PushMsg>> pipeline = ThreadLocal.withInitial(ArrayList::new);
+    private ThreadLocal<Map<String, PushMsg>> pipeline = ThreadLocal.withInitial(LinkedHashMap::new);
 
     /**
      * 是否已经开始收集推送消息
@@ -42,16 +43,17 @@ public class PushServiceImpl implements PushService {
      *
      * @param channel 推送频道
      * @param value   推送的值
+     * @param id
      * @param args    参数
      */
     @Override
-    public void send(PushChannelEnum channel, Object value, Object... args) {
+    public void send(PushChannelEnum channel, Integer id, Object value, Object... args) {
 
         String topic = channel.getTopic();
         String key = String.format(channel.getKey(), args);
         String valStr = JSON.toJSONString(value);
 
-        this.pipeline.get().add(new PushMsg(key, valStr, topic));
+        this.pipeline.get().put(String.format("%s:%s", key, id), new PushMsg(key, valStr, topic));
     }
 
     @Override
@@ -64,12 +66,12 @@ public class PushServiceImpl implements PushService {
     public void commit() {
 
         try {
-            for (PushMsg pushMsg : pipeline.get()) {
+            for (PushMsg pushMsg : pipeline.get().values()) {
                 topicProducerMap.get(pushMsg.key).newMessage().key(pushMsg.key).value(pushMsg.value).send();
             }
         } catch (PulsarClientException e) {
             log.info("publish error", e);
-        }finally {
+        } finally {
             this.pipeline.remove();
             this.proessing.set(false);
         }

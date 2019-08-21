@@ -64,13 +64,13 @@ public class StudentServiceImpl implements StudentService {
 
         StuClass stuClass = stuClassService.selectOneByClassCno(classId);
         StuClass stuClass1 = new StuClass();
-        if (stuClass != null){
+        if (stuClass != null) {
             stuClass1.setStuCno(student.getCno());
             stuClass1.setClassName(stuClass.getClassName());
             stuClass1.setTeacherCno(stuClass.getTeacherCno());
             stuClass1.setClassCno(stuClass.getClassCno());
         }
 
-        this.pushService.send(PushChannelEnum.TEST_CHANNEL,stuClass1,student.getCno());
+        this.pushService.send(PushChannelEnum.TEST_CHANNEL, stuClass1.getId(), stuClass1, student.getCno());
     }
 }
